@@ -39,19 +39,20 @@
 #ENDIAN = _be
 HARVARD = 1
 # CROSS = riscv-elf
-# CROSS = riscv32-unknown-elf
+CROSS = riscv32-unknown-elf
 # CROSS = riscv32-embedded-elf
-  CROSS = riscv32-embedded$(ENDIAN)-elf
+#  CROSS = riscv32-embedded$(ENDIAN)-elf
 #CCPATH = /usr/local/share/toolchain-$(CROSS)/bin
  CCPATH = /usr/local/share/gcc-$(CROSS)/bin/
  ICARUS = /usr/local/bin/iverilog
 #BOARD  = avnet_microboard_lx9
 #BOARD  = xilinx_ac701_a200
 #BOARD  = qmtech_sdram_lx16
+BOARD  = qmtech_ddr3_spartan6_lx25
 #BOARD  = lattice_brevia2_xp2 
 #BOARD = piswords_rs485_lx9
 #BOARD = digilent_spartan3_s200
-BOARD = aliexpress_hpc40gbe_k420
+#BOARD = aliexpress_hpc40gbe_k420
 
 # now you can just type 'make'
 
