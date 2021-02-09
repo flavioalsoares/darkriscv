@@ -33,8 +33,8 @@
 # makefiles. Of course, you need first set the GCC compiler path/name, the
 # simulator path/name and the board model:
 #
-   ARCH = rv32e
-#  ARCH = rv32i
+#   ARCH = rv32e
+  ARCH = rv32i
 #ENDIAN = _le
 #ENDIAN = _be
 HARVARD = 1

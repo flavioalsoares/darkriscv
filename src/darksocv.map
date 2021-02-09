@@ -1,119 +1,136 @@
 
-Allocating common symbols
-Common symbol       size              file
+Alocação de símbolos comuns
+Símbolo comum       tamanho           arquivo
 
 io                  0x10              io.o
 
-Memory Configuration
+Configuração de memória
 
-Name             Origin             Length             Attributes
+Nome             Origem             Tamanho            Atributos
 IO               0x0000000080000000 0x0000000000000010 rw !x
-ROM              0x0000000000000000 0x0000000000001000 x !rw
-RAM              0x0000000000001000 0x0000000000001000 rw !x
+MEM              0x0000000000000000 0x0000000000002000 xrw
 *default*        0x0000000000000000 0xffffffffffffffff
 
-Linker script and memory map
+Mapa de memória e script de vinculador
 
+
+.text           0x0000000000000000      0xf28
+ *(.boot)
+ .boot          0x0000000000000000       0x7c boot.o
+                0x000000000000006c                check4rv32i
+ *(.text)
+ .text          0x000000000000007c       0x2c io.o
+                0x000000000000007c                board_name
+ .text          0x00000000000000a8        0x0 main.o
+ .text          0x00000000000000a8      0xd9c stdio.o
+                0x00000000000000a8                _idle
+                0x0000000000000124                getchar
+                0x00000000000001c4                putchar
+                0x0000000000000310                gets
+                0x0000000000000480                putstr
+                0x00000000000004c8                puts
+                0x0000000000000514                putdx
+                0x0000000000000690                putx
+                0x0000000000000698                putd
+                0x00000000000006a0                printf
+                0x00000000000007b4                strncmp
+                0x0000000000000818                strcmp
+                0x0000000000000860                strlen
+                0x0000000000000888                memcpy
+                0x00000000000008ac                memset
+                0x00000000000008cc                strtok
+                0x0000000000000980                atoi
+                0x00000000000009ec                xtoi
+                0x0000000000000a44                mac
+                0x0000000000000a4c                __umulsi3
+                0x0000000000000a84                __mulsi3
+                0x0000000000000b08                __udiv_umod_si3
+                0x0000000000000b7c                __udivsi3
+                0x0000000000000bdc                __umodsi3
+                0x0000000000000c3c                __div_mod_si3
+                0x0000000000000ce8                __divsi3
+                0x0000000000000d7c                __modsi3
+                0x0000000000000e08                usleep
+ .text          0x0000000000000e44       0xe4 banner.o
+                0x0000000000000e44                banner
+ .text          0x0000000000000f28        0x0 boot.o
+
+.text.startup   0x0000000000000f28      0x640
+ .text.startup  0x0000000000000f28      0x640 main.o
+                0x0000000000000f28                main
+
+.rela.dyn       0x0000000000001568        0x0
+ .rela.text.startup
+                0x0000000000001568        0x0 io.o
+ .rela.text     0x0000000000001568        0x0 io.o
+
+.data           0x0000000000001568      0x584
+ *(.rodata*)
+ .rodata.str1.4
+                0x0000000000001568       0xde io.o
+ *fill*         0x0000000000001646        0x2 
+ .rodata        0x0000000000001648       0x28 io.o
+ .rodata.str1.4
+                0x0000000000001670      0x2cf main.o
+                                        0x2db (tamanho antes de relaxar)
+ *fill*         0x000000000000193f        0x1 
+ .rodata.str1.4
+                0x0000000000001940       0x19 stdio.o
+ *fill*         0x0000000000001959        0x3 
+ .rodata        0x000000000000195c       0x40 stdio.o
+ .rodata.str1.4
+                0x000000000000199c      0x10d banner.o
+ *fill*         0x0000000000001aa9        0x3 
+ .rodata        0x0000000000001aac       0x31 boot.o
+ *(.data)
+ .data          0x0000000000001add        0x0 io.o
+ .data          0x0000000000001add        0x0 main.o
+ .data          0x0000000000001add        0x0 stdio.o
+ .data          0x0000000000001add        0x0 banner.o
+ .data          0x0000000000001add        0x0 boot.o
+                0x00000000000022dd                _global = (. + 0x800)
+ *(.sbss)
+ *fill*         0x0000000000001add        0x3 
+ .sbss          0x0000000000001ae0        0x8 io.o
+                0x0000000000001ae0                utimers
+                0x0000000000001ae4                threads
+ .sbss          0x0000000000001ae8        0x4 stdio.o
+ *(.bss)
+ .bss           0x0000000000001aec        0x0 io.o
+ .bss           0x0000000000001aec        0x0 main.o
+ .bss           0x0000000000001aec        0x0 stdio.o
+ .bss           0x0000000000001aec        0x0 banner.o
+ .bss           0x0000000000001aec        0x0 boot.o
+                0x0000000000001aec                _heap = .
+                0x0000000000002000                PROVIDE (_stack = (ORIGIN (MEM) + LENGTH (MEM)))
 
 .io             0x0000000080000000       0x10
  io.o(COMMON)
  COMMON         0x0000000080000000       0x10 io.o
                 0x0000000080000000                io
-
-.text           0x0000000000000000      0x8f4
- boot.o(.text)
- .text          0x0000000000000000       0xa4 boot.o
-                0x0000000000000000                boot
- *(.text)
- .text          0x00000000000000a4       0xd0 io.o
-                0x00000000000000a4                board_name
- .text          0x0000000000000174      0x70c stdio.o
-                0x0000000000000174                getchar
-                0x0000000000000190                putchar
-                0x00000000000001d0                gets
-                0x0000000000000288                putstr
-                0x00000000000002c8                puts
-                0x00000000000002e4                putdx
-                0x00000000000003dc                putx
-                0x00000000000003e4                putd
-                0x00000000000003ec                printf
-                0x00000000000004c0                strncmp
-                0x00000000000004f4                strcmp
-                0x00000000000004fc                strlen
-                0x0000000000000520                memcpy
-                0x0000000000000544                memset
-                0x0000000000000560                strtok
-                0x0000000000000600                atoi
-                0x0000000000000654                xtoi
-                0x0000000000000694                mac
-                0x000000000000069c                __umulsi3
-                0x00000000000006d0                __mulsi3
-                0x0000000000000728                __udiv_umod_si3
-                0x0000000000000778                __udivsi3
-                0x0000000000000780                __umodsi3
-                0x0000000000000788                __div_mod_si3
-                0x000000000000080c                __divsi3
-                0x0000000000000814                __modsi3
-                0x000000000000081c                usleep
- .text          0x0000000000000880        0x0 main.o
- .text          0x0000000000000880       0x74 banner.o
-                0x0000000000000880                banner
-
-.text.startup   0x00000000000008f4      0x53c
- .text.startup  0x00000000000008f4      0x53c main.o
-                0x00000000000008f4                main
-
-.data           0x0000000000001000      0x550
- *(.sbss)
- .sbss          0x0000000000001000        0x8 io.o
-                0x0000000000001000                utimers
-                0x0000000000001004                threads
- .sbss          0x0000000000001008        0x4 stdio.o
- *(.rodata*)
- .rodata.str1.4
-                0x000000000000100c       0xe0 io.o
- .rodata.str1.4
-                0x00000000000010ec       0x21 boot.o
- *fill*         0x000000000000110d        0x3 
- .rodata        0x0000000000001110       0x40 stdio.o
- .rodata.str1.4
-                0x0000000000001150       0x19 stdio.o
- *fill*         0x0000000000001169        0x3 
- .rodata.str1.4
-                0x000000000000116c      0x2d3 main.o
-                                        0x2d7 (size before relaxing)
- *fill*         0x000000000000143f        0x1 
- .rodata.str1.4
-                0x0000000000001440      0x110 banner.o
-                                        0x10d (size before relaxing)
- *(.data)
- .data          0x0000000000001550        0x0 io.o
- .data          0x0000000000001550        0x0 boot.o
- .data          0x0000000000001550        0x0 stdio.o
- .data          0x0000000000001550        0x0 main.o
- .data          0x0000000000001550        0x0 banner.o
- *(.bss)
- .bss           0x0000000000001550        0x0 io.o
- .bss           0x0000000000001550        0x0 boot.o
- .bss           0x0000000000001550        0x0 stdio.o
- .bss           0x0000000000001550        0x0 main.o
- .bss           0x0000000000001550        0x0 banner.o
- *(.rela*)
- .rela.text     0x0000000000001550        0x0 io.o
- .rela.text.startup
-                0x0000000000001550        0x0 io.o
- *(COMMON)
-LOAD boot.o
-LOAD stdio.o
 LOAD main.o
+LOAD stdio.o
 LOAD io.o
 LOAD banner.o
+LOAD boot.o
 OUTPUT(darksocv.o elf32-littleriscv)
 
-.comment        0x0000000000000000       0x29
- .comment       0x0000000000000000       0x29 io.o
-                                         0x2a (size before relaxing)
- .comment       0x0000000000000029       0x2a boot.o
- .comment       0x0000000000000029       0x2a stdio.o
- .comment       0x0000000000000029       0x2a main.o
- .comment       0x0000000000000029       0x2a banner.o
+.comment        0x0000000000000000       0x2a
+ .comment       0x0000000000000000       0x2a io.o
+                                         0x2b (tamanho antes de relaxar)
+ .comment       0x000000000000002a       0x2b main.o
+ .comment       0x000000000000002a       0x2b stdio.o
+ .comment       0x000000000000002a       0x2b banner.o
+
+.riscv.attributes
+                0x0000000000000000       0x1c
+ .riscv.attributes
+                0x0000000000000000       0x1c io.o
+ .riscv.attributes
+                0x000000000000001c       0x1c main.o
+ .riscv.attributes
+                0x0000000000000038       0x1c stdio.o
+ .riscv.attributes
+                0x0000000000000054       0x1c banner.o
+ .riscv.attributes
+                0x0000000000000070       0x1a boot.o

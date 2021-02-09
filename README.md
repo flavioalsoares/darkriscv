@@ -4,6 +4,7 @@ Opensource RISC-V implemented from scratch in one night!
 ## Table of Contents
 
 - [Introduction](#introduction)
+- [History](#history)
 - [Project Background](#project-background)
 - [Directory Description](#directory-description)
 - ["src" Directory](#src-directory)
@@ -23,6 +24,46 @@ Developed in a magic night of 19 Aug, 2018 between 2am and 8am, the
 *DarkRISCV* softcore started as an proof of concept for the opensource
 RISC-V instruction set.  
 
+Although the code is small and crude when compared with other RISC-V
+implementations, the *DarkRISCV* has lots of impressive features:
+
+- implements most of the RISC-V RV32E instruction set
+- implements most of the RISC-V RV32I instruction set (missing csr*, e* and fence*)
+- works up to 220MHz in a kintex-7 and up to 100MHz in a cheap spartan-6
+- can sustain 1 clock per instruction most of time
+- flexible harvard architecture (easy to integrate a cache controller)
+- works fine in a real xilinx, altera and lattice FPGAs
+- works fine with gcc 9.0.0 for RISC-V (no patches required!)
+- uses between 1000-1500LUTs (core only with LUT6 technology, depending of enabled features)
+- optional RV32E support (works better with LUT4 FPGAs)
+- optional 16x16-bit MAC instruction (for digital signal processing) 
+- optional coarse-grained multi-threading (MT)
+- no interlock between pipeline stages!
+- BSD license: can be used anywhere with no restrictions!
+
+Some extra features are planned for the furure or under development:
+
+- interrupt controller (under tests)
+- cache controller (under tests)
+- gpio and timer (under tests)
+- sdram controller w/ data scrambler
+- branch predictor (under tests)
+- ethernet controller (GbE)
+- multi-processing (SMP)
+- network on chip (NoC)
+- rv64i support (not so easy as it appears...)
+- dynamic bus sizing and big-endian support
+- user/supervisor modes
+- debug support
+- misaligned memory access
+- bridge for 8/16/32-bit buses 
+
+And much other features!
+
+Feel free to make suggestions and good hacking! o/
+
+## History
+
 The initial concept was based in my other early 16-bit RISC processors and
 composed by a simplified two stage pipeline, where a instruction is fetch
 from a instruction memory in the first clock and then the instruction is
@@ -40,7 +81,7 @@ nights of work and the help of lots of colleagues, the *DarkRISCV* reached a
 very good quality result, in a way that the code compiled by the standard
 GCC for RV32I worked fine.
 
-Nowadays, after two years of development, a three stage pipeline working
+After two years of development, a three stage pipeline working
 with a single clock phase is also available, resulting in a better
 distribution between the decode and execute stages.  In this case the
 instruction is fetch in the first clock from a blockram, decoded in the
@@ -55,43 +96,9 @@ pipeline version can reach a instruction per clock (IPC) of 0.7, smaller
 than the measured IPC of 0.85 in the case of the 2-stage pipeline version.
 
 Anyway, with the 3-stage pipeline and some other expensive optimizations,
-the *DarkRISCV* can reach 100MHz in a low-cost Spartan-6, which results in
+the *DarkRISCV* can reach up to 100MHz in a low-cost Spartan-6, which results in
 more performance when compared with the 2-stage pipeline version (typically
 50MHz).
-
-Although the code is small and crude when compared with other RISC-V
-implementations, the *DarkRISCV* has lots of impressive features:
-
-- implements most of the RISC-V RV32I instruction set (missing csr*, e* and fence*)
-- works up to 100MHz (spartan-6) and sustain 1 clock per instruction most of time
-- flexible harvard architecture (easy to integrate a cache controller)
-- works fine in a real xilinx and lattice FPGAs
-- works fine with gcc 9.0.0 for RISC-V (no patches required!)
-- uses between 1000-1500LUTs, depending of enabled features (Xilinx LUT6)
-- optional RV32E support (works better with LUT4 FPGAs)
-- optional 16x16-bit MAC instruction (for signal processing) 
-- optional coarse-grained multi-threading (MT)
-- no interlock between pipeline stages 
-- BSD license: can be used anywhere with no restrictions!
-
-Some extra features are planned for the furure or under development:
-
-- interrupt controller (under tests)
-- cache controller (under tests)
-- gpio and timer (under tests)
-- sdram controller w/ data scrambler
-- branch predictor (under tests)
-- ethernet controller (GbE)
-- multi-processing (SMP)
-- network on chip (NoC)
-- rv64i support (not so easy as appears...)
-- dynamic bus size and big-endian support
-- user/supervisor modes
-- debug support
-
-And much other features!
-
-Feel free to make suggestions and good hacking! o/
 
 ## Project Background
 
@@ -165,16 +172,25 @@ git clone https://github.com/darklife/darkriscv.git
 
 Pre Setup Guide for MacOS:
 
-The document encompasses all the dependencies and steps to install those dependencies to successfully utilize the Darriscv ecosystem on MacOS.
+The document encompasses all the dependencies and steps to install those
+dependencies to successfully utilize the Darriscv ecosystem on MacOS.
 
-Essentially, the ecosystem cannot be utilized in MacOS because of on of the dependencies Xilinx ISE 14.7 Design suit, which currently do not support MacOS. 
+Essentially, the ecosystem cannot be utilized in MacOS because of on of the
+dependencies Xilinx ISE 14.7 Design suit, which currently do not support
+MacOS.
 
-In order to overcome this issue, we need to install Linux/Windows on MacOS by using below two methods:
+In order to overcome this issue, we need to install Linux/Windows on MacOS
+by using below two methods:
 
-a) WineSkin, which is a kind of Windows emulator that runs the Windows application natively but intercepts and emulate the Windows calls to map directly in the macOS.
-b) VirtualBox (or VMware, Parallels, etc) in order to run a complete Windows OS or Linux, which appears to be far better than the WineSkin option.
+a) WineSkin, which is a kind of Windows emulator that runs the Windows
+application natively but intercepts and emulate the Windows calls to map
+directly in the macOS.  
 
-I used the second method and installed VMware Fusion to install Linux Mint. Please find below the links I used to obtain download files.
+b) VirtualBox (or VMware, Parallels, etc) in order to run a complete Windows
+OS or Linux, which appears to be far better than the WineSkin option.
+
+I used the second method and installed VMware Fusion to install Linux Mint. 
+Please find below the links I used to obtain download files.
 
 Dependencies:
 
@@ -189,15 +205,22 @@ d.  FLEX
 
 Icarus Verilog Setup:
 
-The steps have been condensed for linux operating system. Complete steps for all other OS platforms are available on https://iverilog.fandom.com/wiki/Installation_Guide.
+The steps have been condensed for linux operating system.  Complete steps
+for all other OS platforms are available on
+https://iverilog.fandom.com/wiki/Installation_Guide.
 
-Step 1: Download Verilog download tar file from ftp://ftp.icarus.com/pub/eda/verilog/ . Always install the latest version. Verilog-10.3 is the latest version as of now.
+Step 1: Download Verilog download tar file from
+ftp://ftp.icarus.com/pub/eda/verilog/ .  Always install the latest version. 
+Verilog-10.3 is the latest version as of now.
 
 Step 2: Extract the tar file using ‘% tar -zxvf verilog-version.tar.gz’.
 
-Step 3: Go to the Verilog folder using ‘cd Verilog-version’. Here it is cd Verilog-10.3.
+Step 3: Go to the Verilog folder using ‘cd Verilog-version’.  Here it is cd
+Verilog-10.3.
 
-Step 4: Check if you have the following libraries installed: Flex, Bison, g++ and gcc. If not use ‘sudo apt-get install flex bison g++ gcc’ in terminal to install. Restart the system once for effects to change place.
+Step 4: Check if you have the following libraries installed: Flex, Bison,
+g++ and gcc.  If not use ‘sudo apt-get install flex bison g++ gcc’ in
+terminal to install.  Restart the system once for effects to change place.
 
 Step 5: Run the below commands in directory Verilog-10.3
 1.  ./configure
@@ -223,7 +246,8 @@ a.  Sudo apt-get install libncurses5 libncursesw-dev
 2.  For 32 bit architecture
 a.  Sudo apt-get install libncurses5:i386
 
-Once all pre-requisites are installed, go to root directory and run the below code:
+Once all pre-requisites are installed, go to root directory and run the
+below code:
 
 cd darkrisc 
 make (use sudo if required)
@@ -240,12 +264,13 @@ By default, the top level *Makefile* uses:
 	ICARUS = /usr/local/bin/iverilog
 	BOARD  = avnet_microboard_lx9
 	
-Just update the configuration according to your system configuration, 
-type *make* and hope everything is in the correct location! You probably will
-need fix some paths and set some others in the PATH environment variable, but
-it will eventually work.
+Just update the configuration according to your system configuration, type
+*make* and hope everything is in the correct location!  You probably will
+need fix some paths and set some others in the PATH environment variable,
+but it will eventually work.
 
-And, when everything is correctly configured, the result will be something like this:
+And, when everything is correctly configured, the result will be something
+like this:
 
 ```$ 
 # make
@@ -800,9 +825,10 @@ And one number for speed grade 3 devices:
 
 - Kintex-7:	221MHz
 
-Although Vivado is far slow and shows pessimistic numbers for the same FPGAs when 
-compared with ISE, I guess Vivado is more realistic and, at least, it supports the
-new Spartan-7, which shows very good numbers (almost the same as the Artix-7!).
+Although Vivado is far slow and shows pessimistic numbers for the same FPGAs
+when compared with ISE, I guess Vivado is more realistic and, at least, it
+supports the new Spartan-7, which shows very good numbers (almost the same
+as the Artix-7!).
 
 That values are only for reference.  The real values depends of some options
 in the core, such as the number of pipeline stages, who the memories are
@@ -1033,15 +1059,16 @@ that shows the design of a RISC-V processor from scratch:
 - https://www.twitch.tv/videos/858055433 instruction decode and execute - part 3/3 - SoC simulation (10h24)
 - TBD tests in the Lattice FPGA
 
-Unfortunately the video set is currently in portuguese only and there a lot of
-parallel discussions about technology, including the fix of the Teske's notebook
-online! I hope in the future will be possible edit the video set and, maybe, 
-create english subtitles.
+Unfortunately the video set is currently in portuguese only and there a lot
+of parallel discussions about technology, including the fix of the Teske's
+notebook online!  I hope in the future will be possible edit the video set
+and, maybe, create english subtitles.
 
-About the processor itself, it is a microcode oriented concept with a classic 
-von neumann archirecture, designed to support more easily different ISAs. It is really
-very different than the traditional RISC cores that we found around! Also, it includes 
-a very good eco-system around opensource tools, such as Icarus, Yosys and gtkWave!
+About the processor itself, it is a microcode oriented concept with a
+classic von neumann archirecture, designed to support more easily different
+ISAs.  It is really very different than the traditional RISC cores that we
+found around!  Also, it includes a very good eco-system around opensource
+tools, such as Icarus, Yosys and gtkWave!
 
 Although not finished yet (95% done!), I think it is very illustrative about the RISC-V design:
 
@@ -1051,9 +1078,9 @@ Although not finished yet (95% done!), I think it is very illustrative about the
 - rv32e instruction decode: very simple to understand, very direct to implement
 - rv32e software support: the GCC support provides an easy way to generate code and test it!
 
-The Teske's proposal is not design the faster RISC-V core ever (we already have lots 
-of faster cores with CPI ~ 1, such as the darkriscv, vexriscv, etc), but create a clean, 
-reliable and compreensive RISC-V core.
+The Teske's proposal is not design the faster RISC-V core ever (we already
+have lots of faster cores with CPI ~ 1, such as the darkriscv, vexriscv,
+etc), but create a clean, reliable and compreensive RISC-V core.
 
 You can check the code in the following repository:
 
@@ -1071,7 +1098,7 @@ Special thanks to my old colleagues from the Verilog/VHDL/IT area:
 - Fabiano Silos (technology guru)
 
 Also, special thanks to the "friends of darkriscv" that found the project in
-the internet and contributed in any way to make it better: 
+the internet and contributed in any way to make it better:
 
 - Guilherme Barile (technology guru and first guy to post anything about the darkriscv! [2]).
 - Alasdair Allan (technology guru, posted an article about the darkriscv [3]) 

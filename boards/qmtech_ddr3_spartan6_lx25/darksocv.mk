@@ -105,4 +105,4 @@ install: $(BIT) $(BOOT) $(UCF) $(RTLS)
 	cd $(TMP) && impact -batch $(IMP)
 
 clean:
-	-rm -v $(TMP)/*
+	rm -rfv $(TMP)/*
